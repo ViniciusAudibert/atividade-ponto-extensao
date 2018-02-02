@@ -1,23 +1,9 @@
-const PROJETOS_ATUALIZADOS_MSG_KEY = 'projetos-atualizados-msg-key'
-const LOCAL_STORAGE_PROJETOS = 'local-storage-projetos'
-
-const NOME_CLIENTE_ID = 'atividade-ponto_cliente'
-const NOME_PROJETO_ID = 'atividade-ponto_projeto'
-const DESCRICAO_ID = 'atividade-ponto_descricao'
-const DATA_INICIO_ID = 'atividade-ponto_data-inicial'
-const DATA_FIM_ID = 'atividade-ponto_data-final'
-const BTN_SUBMIT_ID = 'atividade-ponto_submit'
-const BTN_ATUALIZAR_PROJETOS_ID = 'atividade-ponto_atualizar-projetos'
-
-const CAMINHO_BASE = 'atividadePonto'
-const CAMINHO_LISTA_PROJETOS = `${CAMINHO_BASE}/listaProjeto.txt`
-const CAMINHO_ATIVIDADE_PONTO = `${CAMINHO_BASE}/atividadePonto.js`
-const CAMINHO_ATUALIZAR_PROJETOS = `${CAMINHO_BASE}/atualizadorProjeto.js`
-
 class AtividadePontoPopup {
     constructor() {
         this.projetos = []
+
         this.binds()
+        this.setConstantes()
         this.init()
     }
 
@@ -25,12 +11,30 @@ class AtividadePontoPopup {
         this.onMessageAtualizarProjetos = this.onMessageAtualizarProjetos.bind(this)
     }
 
+    setConstantes() {
+        this.PROJETOS_ATUALIZADOS_MSG_KEY = 'projetos-atualizados-msg-key'
+        this.LOCAL_STORAGE_PROJETOS = 'local-storage-projetos'
+
+        this.NOME_CLIENTE_ID = 'atividade-ponto_cliente'
+        this.NOME_PROJETO_ID = 'atividade-ponto_projeto'
+        this.DESCRICAO_ID = 'atividade-ponto_descricao'
+        this.DATA_INICIO_ID = 'atividade-ponto_data-inicial'
+        this.DATA_FIM_ID = 'atividade-ponto_data-final'
+        this.BTN_SUBMIT_ID = 'atividade-ponto_submit'
+        this.BTN_ATUALIZAR_PROJETOS_ID = 'atividade-ponto_atualizar-projetos'
+
+        this.CAMINHO_BASE = 'atividadePonto'
+        this.CAMINHO_LISTA_PROJETOS = `${this.CAMINHO_BASE}/listaProjeto.txt`
+        this.CAMINHO_ATIVIDADE_PONTO = `${this.CAMINHO_BASE}/atividadePonto.js`
+        this.CAMINHO_ATUALIZAR_PROJETOS = `${this.CAMINHO_BASE}/atualizadorProjeto.js`
+    }
+
     init() {
         new Pikaday({
-            field: document.getElementById(DATA_INICIO_ID)
+            field: document.getElementById(this.DATA_INICIO_ID)
         })
         new Pikaday({
-            field: document.getElementById(DATA_FIM_ID)
+            field: document.getElementById(this.DATA_FIM_ID)
         })
 
         this.iniciarMessageListener()
@@ -41,7 +45,7 @@ class AtividadePontoPopup {
         const self = this
         chrome.runtime.onMessage.addListener(
             (request, sender, sendResponse) => {
-                if (request.msg === PROJETOS_ATUALIZADOS_MSG_KEY) {
+                if (request.msg === this.PROJETOS_ATUALIZADOS_MSG_KEY) {
                     self.onMessageAtualizarProjetos(request.data)
                 }
             }
@@ -50,20 +54,20 @@ class AtividadePontoPopup {
 
     onMessageAtualizarProjetos(clientesEProjetos) {
         window.close()
-        localStorage.setItem(LOCAL_STORAGE_PROJETOS, JSON.stringify(clientesEProjetos))
+        localStorage.setItem(this.LOCAL_STORAGE_PROJETOS, JSON.stringify(clientesEProjetos))
 
     }
 
     carregarProjetos() {
-        const listProjeto = localStorage.getItem(LOCAL_STORAGE_PROJETOS)
+        const listProjeto = localStorage.getItem(this.LOCAL_STORAGE_PROJETOS)
 
         if (!!listProjeto) {
             this.projetos = JSON.parse(listProjeto)
             this.carregarClientes()
         } else {
-            this.requestArquivoInterno(CAMINHO_LISTA_PROJETOS, 'GET')
+            this.requestArquivoInterno(this.CAMINHO_LISTA_PROJETOS, 'GET')
                 .then(response => {
-                    localStorage.setItem(LOCAL_STORAGE_PROJETOS, response)
+                    localStorage.setItem(this.LOCAL_STORAGE_PROJETOS, response)
                     this.projetos = JSON.parse(response)
                     this.carregarClientes()
                 })
@@ -74,7 +78,7 @@ class AtividadePontoPopup {
     }
 
     carregarClientes() {
-        let clienteInput = document.getElementById(NOME_CLIENTE_ID)
+        let clienteInput = document.getElementById(this.NOME_CLIENTE_ID)
         clienteInput.onchange = event => this.clienteOnChange(event)
 
         this.projetos.forEach(element => {
@@ -90,10 +94,10 @@ class AtividadePontoPopup {
     }
 
     adicionarEventosDaModal() {
-        const btnSubmit = document.getElementById(BTN_SUBMIT_ID)
+        const btnSubmit = document.getElementById(this.BTN_SUBMIT_ID)
         btnSubmit.addEventListener('click', () => this.submitForm(), false)
 
-        const btnAtualizarProjetos = document.getElementById(BTN_ATUALIZAR_PROJETOS_ID)
+        const btnAtualizarProjetos = document.getElementById(this.BTN_ATUALIZAR_PROJETOS_ID)
         btnAtualizarProjetos.addEventListener('click', () => this.atualizarProjetos(), false)
     }
 
@@ -101,14 +105,14 @@ class AtividadePontoPopup {
         const pontoModel = this.getAtividadePontoModel()
 
         if (pontoModel.isValido()) {
-            this.executarJsFileInterno(CAMINHO_ATIVIDADE_PONTO, `const pontoModel =  ${JSON.stringify(pontoModel)}`)
+            this.executarJsFileInterno(this.CAMINHO_ATIVIDADE_PONTO, `const pontoModel =  ${JSON.stringify(pontoModel)}`)
         } else {
             alert('Preencha todo o formulário!')
         }
     }
 
     atualizarProjetos() {
-        this.executarJsFileInterno(CAMINHO_ATUALIZAR_PROJETOS)
+        this.executarJsFileInterno(this.CAMINHO_ATUALIZAR_PROJETOS)
     }
 
     executarJsFileInterno(caminho, codigoParametro) {
@@ -119,10 +123,14 @@ class AtividadePontoPopup {
             }, activeTabs => {
                 activeTabs.map(tab => {
                     chrome.tabs.executeScript(tab.id, {
-                        code: codigoParametro,
-                        file: caminho,
-                        allFrames: false
-                    })
+                            code: codigoParametro
+                        },
+                        () => {
+                            chrome.tabs.executeScript(tab.id, {
+                                file: caminho,
+                                allFrames: false
+                            })
+                        })
                 })
             })
         })
@@ -130,11 +138,11 @@ class AtividadePontoPopup {
 
     getAtividadePontoModel() {
         return new AtividadePontoModel({
-            nomeCliente: document.getElementById(NOME_CLIENTE_ID).value,
-            nomeProjeto: document.getElementById(NOME_PROJETO_ID).value,
-            descricaoAtividade: document.getElementById(DESCRICAO_ID).value,
-            dataInicio: document.getElementById(DATA_INICIO_ID).value,
-            dataFim: document.getElementById(DATA_FIM_ID).value,
+            nomeCliente: document.getElementById(this.NOME_CLIENTE_ID).value,
+            nomeProjeto: document.getElementById(this.NOME_PROJETO_ID).value,
+            descricaoAtividade: document.getElementById(this.DESCRICAO_ID).value,
+            dataInicio: document.getElementById(this.DATA_INICIO_ID).value,
+            dataFim: document.getElementById(this.DATA_FIM_ID).value,
         })
     }
 
@@ -142,7 +150,7 @@ class AtividadePontoPopup {
         const cliente = this.projetos.find(projeto => projeto.cliente === event.target.value)
 
         if (cliente) {
-            const projetoInput = document.getElementById(NOME_PROJETO_ID)
+            const projetoInput = document.getElementById(this.NOME_PROJETO_ID)
 
             while (projetoInput.firstChild) {
                 projetoInput.removeChild(projetoInput.firstChild)

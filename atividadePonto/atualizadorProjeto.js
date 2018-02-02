@@ -1,19 +1,23 @@
-const PROJETOS_ATUALIZADOS_MSG_KEY = 'projetos-atualizados-msg-key'
-
-const ICONE_PREENCHIDO_FILENAME = 'register_activity.png'
-const ICONE_NAO_PREENCHIDO_FILENAME = 'register_activity_notFilled.png'
-const TABLE_HORARIOS_ID = 'tbcMain_tbpHorary_GridViewHorary'
-
-const MODAL_IFRAME_ID = 'CWIModalPopup_CWIModalPopupIFrame'
-const MODAL_CLIENTE_ID = 'FormViewActivity_ddlClients'
-const MODAL_PROJETO_ID = 'FormViewActivity_ddlProjects'
-const MODAL_CLOSE_BTN_ID = 'CWIModalPopup_CWIWindowBaseCloseButton'
-
 class AtualizadorProjeto {
 
     constructor() {
         this.clientesEProjetos = []
+
+        this.setConstantes()
         this.init()
+    }
+
+    setConstantes() {
+        this.PROJETOS_ATUALIZADOS_MSG_KEY = 'projetos-atualizados-msg-key'
+
+        this.ICONE_PREENCHIDO_FILENAME = 'register_activity.png'
+        this.ICONE_NAO_PREENCHIDO_FILENAME = 'register_activity_notFilled.png'
+        this.TABLE_HORARIOS_ID = 'tbcMain_tbpHorary_GridViewHorary'
+
+        this.MODAL_IFRAME_ID = 'CWIModalPopup_CWIModalPopupIFrame'
+        this.MODAL_CLIENTE_ID = 'FormViewActivity_ddlClients'
+        this.MODAL_PROJETO_ID = 'FormViewActivity_ddlProjects'
+        this.MODAL_CLOSE_BTN_ID = 'CWIModalPopup_CWIWindowBaseCloseButton'
     }
 
     init() {
@@ -22,11 +26,11 @@ class AtualizadorProjeto {
     }
 
     abrirModalAtividade() {
-        const rows = document.getElementById(TABLE_HORARIOS_ID).tBodies[0].children
+        const rows = document.getElementById(this.TABLE_HORARIOS_ID).tBodies[0].children
         for (let i = 0; i < rows.length; i++) {
             const iconeAtividadeInput = rows[i].cells[rows[i].cells.length - 1].children[0]
 
-            if (iconeAtividadeInput.src.endsWith(ICONE_PREENCHIDO_FILENAME) || iconeAtividadeInput.src.endsWith(ICONE_NAO_PREENCHIDO_FILENAME)) {
+            if (iconeAtividadeInput.src.endsWith(this.ICONE_PREENCHIDO_FILENAME) || iconeAtividadeInput.src.endsWith(this.ICONE_NAO_PREENCHIDO_FILENAME)) {
                 iconeAtividadeInput.click()
                 break
             }
@@ -34,17 +38,17 @@ class AtualizadorProjeto {
     }
 
     iniciarBuscaDosProjetos() {
-        this.aguardarObjetoCarregar(() => this.getModalDocument().getElementById(MODAL_CLIENTE_ID), 1000)
+        this.aguardarObjetoCarregar(() => this.getModalDocument().getElementById(this.MODAL_CLIENTE_ID), 1000)
             .then(() => {
-                const clientes = this.getModalDocument().getElementById(MODAL_CLIENTE_ID).children
+                const clientes = this.getModalDocument().getElementById(this.MODAL_CLIENTE_ID).children
                 this.preencherListaDeClientesEProjetos(1, clientes)
             })
     }
 
     preencherListaDeClientesEProjetos(index, listClientesInput) {
         if (index < listClientesInput.length) {
-            const nomeProjetoAnterior = this.getModalDocument().getElementById(MODAL_PROJETO_ID).textContent
-            const clienteInput = this.getModalDocument().getElementById(MODAL_CLIENTE_ID)
+            const nomeProjetoAnterior = this.getModalDocument().getElementById(this.MODAL_PROJETO_ID).textContent
+            const clienteInput = this.getModalDocument().getElementById(this.MODAL_CLIENTE_ID)
             const nomeCliente = listClientesInput[index].textContent
 
             this.setInputNomeProjeto(clienteInput, nomeCliente)
@@ -62,12 +66,12 @@ class AtualizadorProjeto {
     }
 
     isProjetoInputCarregado(nomeProjetoAnterior) {
-        const projetoInput = this.getModalDocument().getElementById(MODAL_PROJETO_ID)
+        const projetoInput = this.getModalDocument().getElementById(this.MODAL_PROJETO_ID)
         return projetoInput.length > 1 && nomeProjetoAnterior !== projetoInput.textContent
     }
 
     adicionarNovoCliente(nomeCliente) {
-        const listProjetosInput = this.getModalDocument().getElementById(MODAL_PROJETO_ID).children
+        const listProjetosInput = this.getModalDocument().getElementById(this.MODAL_PROJETO_ID).children
         const listProjetoName = this.mapNomeDosProjetosFromInput(listProjetosInput)
 
         this.clientesEProjetos.push(new ClienteEProjetos(nomeCliente, listProjetoName))
@@ -75,11 +79,11 @@ class AtualizadorProjeto {
 
     salvarClientesEFecharModal() {
         chrome.runtime.sendMessage({
-            msg: PROJETOS_ATUALIZADOS_MSG_KEY,
+            msg: this.PROJETOS_ATUALIZADOS_MSG_KEY,
             data: this.clientesEProjetos
         });
 
-        const btnFechar = document.getElementById(MODAL_CLOSE_BTN_ID)
+        const btnFechar = document.getElementById(this.MODAL_CLOSE_BTN_ID)
         btnFechar.click()
     }
 
@@ -122,7 +126,7 @@ class AtualizadorProjeto {
 
     getModalDocument() {
         try {
-            return document.getElementById(MODAL_IFRAME_ID).contentWindow.document
+            return document.getElementById(this.MODAL_IFRAME_ID).contentWindow.document
         } catch (e) {
             return undefined
         }
