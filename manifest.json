@@ -1,0 +1,31 @@
+{
+  "manifest_version": 2,
+  "name": "CWI Helper",
+  "version": "0.1",
+  "web_accessible_resources": [
+    "atividadePonto/atividadePonto.js",
+    "atividadePonto/atualizadorProjeto.js",
+    "login/loginSonicWall.html",
+    "login/loginSonicWallCss.html",
+    "atividadePonto/listaProjeto.txt"
+  ],
+  "permissions": [
+    "tabs",
+    "storage",
+    "http://ponto.cwi.com.br/*",
+    "https://10.0.100.1:4443/*"
+  ],
+  "browser_action": {
+    "default_icon": "icon.png",
+    "default_popup": "atividadePonto/atividadePontoPopup.html"
+  },
+  "icons": {
+    "16": "icon.png",
+    "48": "icon.png",
+    "128": "icon.png"
+  },
+  "content_scripts": [{
+    "matches": ["https://10.0.100.1:4443/auth.html", "https://10.0.100.1:4443/"],
+    "js": ["login/cryptor.js", "login/loginSonicWall.js"]
+  }]
+}

@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Formulário</title>
+    <link rel="stylesheet" href="form.css">
+    <link rel="stylesheet" href="pikaday.css">
+</head>
+
+<body>
+    <div id="atividade-ponto" class="atividade-ponto_modal">
+        <div class="atividade-ponto_content">
+            <div class="atividade-ponto_header">
+                <h2>Preencha as informações da atividade</h2>
+            </div>
+            <div class="atividade-ponto_body">
+                <select class="atividade-ponto_input" type="text" id="atividade-ponto_cliente">
+                    <option selected>Nome do Cliente</option>
+                </select>
+                <select class="atividade-ponto_input" type="text" id="atividade-ponto_projeto">
+                    <option selected>Nome do Projeto</option>
+                </select>
+                <input class="atividade-ponto_input" type="text" id="atividade-ponto_descricao" placeholder="Descrição da Atividade">
+                <input class="atividade-ponto_input" type="text" id="atividade-ponto_data-inicial" placeholder="Data Inicial">
+                <input class="atividade-ponto_input" type="text" id="atividade-ponto_data-final" placeholder="Data Final">
+                <button id="atividade-ponto_submit" type="button" class="atividade-ponto_btn atividade-ponto_btn-primary atividade-ponto_btn-block atividade-ponto_btn-large atividade-ponto_input">Atribuir</button>
+                <button id="atividade-ponto_atualizar-projetos" type="button" class="atividade-ponto_btn atividade-ponto_btn-primary atividade-ponto_btn-block atividade-ponto_btn-large atividade-ponto_input">Atualizar Projetos</button>
+            </div>
+        </div>
+    </div>
+    <script src='pikaday.js'></script>
+    <script src='atividadePontoPopup.js'></script>
+</body>
+
+</html>
