@@ -42,7 +42,6 @@ class AtividadePontoPopup {
         chrome.runtime.onMessage.addListener(
             (request, sender, sendResponse) => {
                 if (request.msg === PROJETOS_ATUALIZADOS_MSG_KEY) {
-                    debugger
                     self.onMessageAtualizarProjetos(request.data)
                 }
             }
@@ -50,8 +49,8 @@ class AtividadePontoPopup {
     }
 
     onMessageAtualizarProjetos(clientesEProjetos) {
-        self.projetos = clientesEProjetos
-        localStorage.setItem(LOCAL_STORAGE_PROJETOS, JSON.stringify(this.projetos))
+        window.close()
+        localStorage.setItem(LOCAL_STORAGE_PROJETOS, JSON.stringify(clientesEProjetos))
 
     }
 
