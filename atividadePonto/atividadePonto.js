@@ -45,14 +45,14 @@ class AtividadePontoPopup {
             if (this.isDataValida(dataFormatada) && this.isInputNaoPreenchido(input)) {
                 input.click()
 
-                this.preencherCliente(input)
+                this.preencherCliente(input, index)
             } else {
                 this.preencherItensSemAtividades(index + 1, rows)
             }
         }
     }
 
-    preencherCliente(input) {
+    preencherCliente(input, index) {
         this.aguardarObjetoCarregar(() => this.getModalDocument().getElementById(this.MODAL_CLIENTE_ID), 1000)
             .then(() => {
                 const clienteInput = this.getModalDocument().getElementById(this.MODAL_CLIENTE_ID)
